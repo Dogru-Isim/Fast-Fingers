@@ -8,7 +8,7 @@ proc removeUnfinishedSentence(text: var string) =
       quit(0)
     elif text[^1] != '.':
       text = text[0..^2]
-    else:                       #TODO: This is not the best solution since there will be dots at the middle of a sentence ("1." i.e)
+    else:                       #TODO: This is not the best solution since there will be dots in the middle of the sentences (e.g. "1.")
       break
 
 proc getTextLength(): int =
@@ -20,7 +20,7 @@ proc getTextLength(): int =
     of cmdLongOption, cmdShortOption: discard
     of cmdArgument:
       return parseInt(length.key)
-  
+
 #[
   TODO: Get texts from sources on the internet based on their length (preferably the Britannica API)
 
@@ -29,14 +29,18 @@ proc getTextLength(): int =
   If the last sentence is not finished, don't include it.
 ]#
 proc getText(numOfCharacters: int = getTextLength()): string =
+  var realNumOfCharacters: BiggestInt = numOfCharacters
   let textDir = toSeq(walkDir("texts"))
   let sizeOfDir = len(textDir)  # Get the amount of texts that can be used
-  let i = rand(1..sizeOfDir)                  # Choose a random file among them
+  let file: int = rand(1..sizeOfDir) # Choose a random file among them
 
-  result = readFile(textDir[i-1].path)
+  result = readFile(textDir[file-1].path)
+
+  if numOfCharacters > getFileSize(textDir[file-1].path):  # If provided length is longer than file size, make them equal
+    realNumOfCharacters = getFileSize(textDir[file-1].path)
 
   while true:
-    if len(result) == numOfCharacters: break
+    if len(result) == realNumOfCharacters: break
     else:
       result = result[0..^2]
 
@@ -60,7 +64,7 @@ proc main(): void =
   while i < len(text):
     try:
       var input = getch()
-   
+
       if toHex($input) == "1B":    # ESCAPE
         eraseScreen()
         quit(0)
