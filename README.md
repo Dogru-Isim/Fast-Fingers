@@ -1,6 +1,6 @@
 # Fast-Fingers
 
-A small program that I wrote while learning Nim. It's purpose is to improve your typing speed and general knowledge.
+A small program that I wrote while learning Nim. It's purpose is to both improve your typing speed and general knowledge.
 
 ```
 Usage:
